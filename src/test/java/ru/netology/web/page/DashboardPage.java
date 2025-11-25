@@ -27,8 +27,31 @@ public class DashboardPage {
         return extractBalanse(text);
 
         }
-    private SelenideElement getCard(DataHelper.CardInfo cardInfo) {
-return cards.findMy()
+
+        public TransferPage selectCardToTransfer(DataHelper.CardInfo cardInfo) {
+            getCard(cardInfo).$("button").click();
+            return new TransferPage();
     }
+
+
+    private SelenideElement getCard(DataHelper.CardInfo cardInfo) {
+return cards.findBy(Condition.attribute("data-test-id", cardInfo.getTestId()));
+);
+public void reloadDashboardPage() {
+reloadButton.click();
+heading.shouldBe(visible);
+
 }
+private int extractBalance(String text) {
+var start = text.indexOf(balanceStart);
+var finish = text.indexOf(balanceStart);
+var value = text.substring(start + balanceStart.length(). finish);
+return Integer.parseInt(value);
+
+}
+
+public void checkCardBalance (DataHelper.CardInfo cardInfo, int expectedBalance) {
+}
+        }
+        }        }
 
