@@ -10,59 +10,51 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class DashboardPage {
-    private final String balanceStart = "баланс:";
-    private final String balanceFinish = " р.";
-    
-    private final SelenideElement heading = $("[data-test-id=dashboard]");
-    private final ElementsCollection cards = $$(".list__item div");
-    private final SelenideElement reloadButton = $("[data-test-id='action-reload']");
 
-    // Конструктор с проверкой загрузки страницы
-    public DashboardPage() {
-        heading.shouldBe(Condition.visible);
-    }
+    private final String balanceStart = "баланс: "; // 3 usages  
+    private final String balanceFinish = " р."; // 2 usages  
+    private final SelenideElement heading = $(byCssSelector("[data-test-id=dashboard]")); // 2 usages  
+    private final ElementCollection cards = $$(byCssSelector("[data-test-id^='list-item'] div")); // 2 usages  
+    private final SelenideElement reloadButton = $(byCssSelector("[data-test-id='action-reload']")); // 1 usage  
 
-    // Получить баланс карты по CardInfo
-    public int getCardBalance(DataHelper.CardInfo cardInfo) {
-        var text = getCard(cardInfo).getText();
-        return extractBalance(text);
-    }
+    public DashboardPage() {  
+        heading.shouldBe(visible);  
+    }  
 
-    // Получить баланс карты по индексу (альтернативный способ)
-    public int getCardBalance(int index) {
-        var text = cards.get(index).getText();
-        return extractBalance(text);
-    }
+    public int getCardBalance(DataHelper.CardInfo cardInfo) { // 2 usages  
+        var text = getCard(cardInfo).getText();  
+        return extractBalance(text);  
+    }  
 
-    // Переход на страницу перевода для конкретной карты
-    public TransferPage selectCardToTransfer(DataHelper.CardInfo cardInfo) {
-        getCard(cardInfo).$("button").click();
-        return new TransferPage();
-    }
+    public int getCardBalance(int index) { // no usages  
+        var text = cards.get(index).getText();  
+        return extractBalance(text);  
+    }  
 
-    // Вспомогательный метод для поиска карты по testId
-    private SelenideElement getCard(DataHelper.CardInfo cardInfo) {
-        return cards.findBy(Condition.attribute("data-test-id", cardInfo.getTestId()));
-    }
+    public TransferPage selectCardToTransfer(DataHelper.CardInfo cardInfo) { // 2 usages  
+        getCard(cardInfo).$(byCssSelector("button")).click();  
+        return new TransferPage();  
+    }  
 
-    // Обновление страницы (например, после перевода)
-    public void reloadDashboardPage() {
-        reloadButton.click();
-        heading.shouldBe(visible);
-    }
+    private SelenideElement getCard(DataHelper.CardInfo cardInfo) { // 3 usages  
+        return cards.findBy(Condition.attribute("data-test-id", cardInfo.getTestId()));  
+    }  
 
-    // Парсинг числа баланса из текста
-    private int extractBalance(String text) {
-        var start = text.indexOf(balanceStart);
-        var finish = text.indexOf(balanceFinish);
-        var value = text.substring(start + balanceStart.length(), finish).trim();
-        return Integer.parseInt(value);
-    }
+    public void reloadDashboardPage() { // 2 usages  
+        reloadButton.click();  
+        heading.shouldBe(visible);  
+    }  
 
-    // Метод для проверки баланса (может быть реализован позже)
-    public void checkCardBalance(DataHelper.CardInfo cardInfo, int expectedBalance) {
-        int actualBalance = getCardBalance(cardInfo);
-        // Здесь будет assertion, например:
-        // assertThat(actualBalance).isEqualTo(expectedBalance);
-    }
+    private int extractBalance(String text) { // 2 usages  
+        var start = text.indexOf(balanceStart);  
+        var finish = text.indexOf(balanceFinish);  
+        var value = text.substring(start + balanceStart.length(), finish);  
+        return Integer.parseInt(value);  
+    }  
+
+    public void checkCardBalance(DataHelper.CardInfo cardInfo, int expectedBalance) { // 4 usages  
+        getCard(cardInfo)  
+            .shouldBe(visible)  
+            .shouldHave(text(balanceStart + expectedBalance + balanceFinish));  
+    }  
 }
