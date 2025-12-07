@@ -3,11 +3,8 @@ package ru.netology.web.data;
 import lombok.Value;
 
 public class DataHelper {
-    // Приватный конструктор, чтобы запретить создание экземпляров
-    private DataHelper() {
     }
 
-    // Методы для получения тестовых данных
     public static VerificationCode getVerificationCode() {
         return new VerificationCode("12345");
     }
@@ -17,27 +14,19 @@ public class DataHelper {
     }
 
     public static CardInfo getFirstCardInfo() {
-        return new CardInfo("5559 0000 0000 0001", "92df3f1c-a033-48e6-8390-206f6b1f56c0");
+        return new CardInfo("5559 0000 0000 0001", "92df3f1c-a033-48e6-8390-20f60d1fdc0c");
     }
 
     public static CardInfo getSecondCardInfo() {
-        return new CardInfo("5559 0000 0000 0002", "0f3f5c2a-249e-4c3d-8287-09f7a039391d");
+        return new CardInfo("5559 0000 0000 0002", "0f3f5c2a-240e-4c3d-8287-09f7a039391d");
     }
 
     public static int generateValidAmount(int balance) {
-        return Math.abs(balance) / 10; // 10% от баланса - безопасная сумма
+        return Math.abs(balance) / 10;
     }
 
     public static int generateInvalidAmount(int balance) {
-        return Math.abs(balance) + 1000; // Сумма, гарантированно превышающая баланс
-    }
-
-    // Вложенные immutable-классы с помощью Lombok
-
-    @Value
-    public static class AuthInfo {
-        String login;
-        String password;
+        return Math.abs(balance) + 1;
     }
 
     @Value
@@ -46,8 +35,14 @@ public class DataHelper {
     }
 
     @Value
-    public static class CardInfo { // Исправлено имя класса!
+    public static class CardInfo {
         String cardNumber;
-        String testId; // Исправлено название поля (textId -> testId)
+        String testId;
+    }
+
+    @Value
+    public static class AuthInfo {
+        String login;
+        String password;
     }
 }
