@@ -17,23 +17,36 @@ public class TransferPage {
     private final SelenideElement transferHead = $(byText("Пополнение карты"));
     private final SelenideElement errorMessage = $("[data-test-id='error-notification'] .notification__content");
 
-    public TransferPage() {transferHead.shouldBe(visible);}
+    // Конструктор с проверкой загрузки страницы
+    public TransferPage() {
+        transferHead.shouldBe(visible);
+    }
 
-    public DashboardPage makeValidTransfer(String amouToTransfer, DataHelper.CardInfo cardInfo) {
+    // Метод для успешного перевода (возвращает DashboardPage)
+    public DashboardPage makeValidTransfer(String amountToTransfer, DataHelper.CardInfo cardInfo) {
         makeTransfer(amountToTransfer, cardInfo);
-        return new DashBoardPage();
+        return new DashboardPage();  // Исправлено: DashboardPage
+    }
 
-}
+    // Базовый метод перевода (без проверки результата)
+    public void makeTransfer(String amountToTransfer, DataHelper.CardInfo cardInfo) {
+        amountInput.setValue(amountToTransfer);
+        fromInput.setValue(cardInfo.getCardNumber());
+        transferButton.click();
+    }
 
-public void makeTransfer(String amountToTransfer, DataHelper.CardInfo cardInfo){
-    amountInput.setValue(amountToTransfer);
-    fromInput.setValue(cardInfo.getCardNumber());
-    transferButton.click();
-
-}
-
-public void findErrorMassage(String expectedText){
-    errorMessage.should(Condition.visible, Duration.ofSeconds(15).should(Condition.text(expectedText));
-}
-
+    // Метод для проверки сообщения об ошибке
+    public void findErrorMessage(String expectedText) {
+        errorMessage.shouldBe(Condition.visible
+                .because("Сообщение об ошибке должно появиться"))
+                .shouldHave(Condition.text(expectedText)
+                .because("Текст ошибки должен быть: " + expectedText),
+                Duration.ofSeconds(15));
+    }
+    
+    // Альтернативная, более простая версия метода:
+    public void findErrorMessageSimple(String expectedText) {
+        errorMessage.shouldBe(Condition.visible, Duration.ofSeconds(15))
+                   .shouldHave(Condition.text(expectedText));
+    }
 }
