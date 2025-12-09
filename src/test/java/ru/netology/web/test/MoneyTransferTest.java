@@ -22,19 +22,10 @@ public class MoneyTransferTest {
     void setup() {
         var loginPage = open("http://localhost:9999", LoginPage.class);
         var authInfo = DataHelper.getAuthInfo();
-        // Исправлено: validLogin вместо validAuthInfo
         var verificationPage = loginPage.validLogin(authInfo);
         var verificationCode = DataHelper.getVerificationCode();
 
-        // Проблема: VerificationPage не имеет метода!
-        // Нужно добавить метод verify() в VerificationPage
-        // dashboardPage = verificationPage.verify(verificationCode);
-
-        // Временно закомментируем или используем заглушку:
-        // dashboardPage = new DashboardPage();
-
-        // Альтернативно, можно исправить VerificationPage:
-
+        dashboardPage = verificationPage.verify(verificationCode);
         firstCardInfo = DataHelper.getFirstCardInfo();
         secondCardInfo = DataHelper.getSecondCardInfo();
         firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
@@ -43,13 +34,13 @@ public class MoneyTransferTest {
 
     @Test
     void shouldTransferFromFirstToSecond() {
-        // Исправлено: DataHelper.generateValidAmount
         var amount = DataHelper.generateValidAmount(firstCardBalance);
         var expectedBalanceFirstCard = firstCardBalance - amount;
         var expectedBalanceSecondCard = secondCardBalance + amount;
         var transferPage = dashboardPage.selectCardToTransfer(secondCardInfo);
         dashboardPage = transferPage.makeValidTransfer(String.valueOf(amount), firstCardInfo);
         dashboardPage.reloadDashboardPage();
+
         assertAll(
                 () -> dashboardPage.checkCardBalance(firstCardInfo, expectedBalanceFirstCard),
                 () -> dashboardPage.checkCardBalance(secondCardInfo, expectedBalanceSecondCard)
@@ -58,11 +49,9 @@ public class MoneyTransferTest {
 
     @Test
     void shouldSetErrorMessageIfAmountMoreBalance() {
-        // Исправлено: DataHelper.generateInvalidAmount
         var amount = DataHelper.generateInvalidAmount(secondCardBalance);
         var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
         transferPage.makeTransfer(String.valueOf(amount), secondCardInfo);
         transferPage.findErrorMessage("Операция невозможна: недостаточно средств");
-        // assertAll не нужен для одной проверки
     }
 }
