@@ -28,37 +28,4 @@ public class LoginPage {
         return new VerificationPage();
     }
 
-    // Метод для неуспешного входа (негативный тест)
-    public LoginPage invalidLogin(DataHelper.AuthInfo info) {
-        loginField.setValue(info.getLogin());
-        passwordField.setValue(info.getPassword());
-        loginButton.click();
-        // Ожидаем появление сообщения об ошибке
-        errorNotification.shouldBe(Condition.visible);
-        // Возвращаем эту же страницу, т.к. перехода не произошло
-        return this;
-    }
-
-    // Метод для получения текста ошибки
-    public String getErrorText() {
-        return errorNotification.getText();
-    }
-
-    // Метод для ввода только логина (может пригодиться)
-    public LoginPage enterLogin(String login) {
-        loginField.setValue(login);
-        return this;
-    }
-
-    // Метод для ввода только пароля
-    public LoginPage enterPassword(String password) {
-        passwordField.setValue(password);
-        return this;
-    }
-
-    // Метод для нажатия кнопки без заполнения полей
-    public LoginPage submit() {
-        loginButton.click();
-        return this;
-    }
 }
